@@ -29,6 +29,23 @@
             {{ message }}
         </div>
 
+        <div id="specialitys">
+            <p>-------数据库中过去数据---------</p>
+            <input v-model="collegeName">
+            <button v-on:click="onClick">設定</button>
+            {{ message }}
+            <table border="1">
+                <tr>
+                <th>Heading</th>
+                <th>Another Heading</th>
+                </tr>
+                <tr v-for="speciality in specialitys">
+                <td>{{speciality.college_name}}</td>
+                <td>{{speciality.speciality_name}}</td>
+                </tr>
+                </table>
+        </div>
+
         <script type="text/javascript" charset="utf-8">
                 var lifeData = {
                     message: "生命周期",
@@ -72,7 +89,7 @@
                 vm.show = false
 
 
-                //-----
+                //-----------------------------------------
                 var computeData = {
                     firstName: "赵",
                     lastName: "泽骐",
@@ -124,6 +141,40 @@
                 computeData.firstName = "韩" // 值有所变化，但不是最后一次，不会调用计算属性，也不会调用方法
                 computeData.firstName = "宋" // 值有所变化，并且是最后一次，所以会再调用计算属性，也会调用方法 并且绑定的方法被注册了几次，此时也会被再次调用几次，而计算属性只会被调用一次
                 
+                //-----------------------------------------
+                const instance = axios.create({
+                    baseURL: 'http://192.168.18.6:8080/top',
+                    timeout: 10000,
+                    headers: {'Content-Type': 'multipart/form-data'}
+                });
+                var specialityData = {
+                    code:"",
+                    message:"",
+                    specialitys: [],
+                    collegeName:""
+                }
+                var specialitys = new Vue({
+                    el: "#specialitys",
+                    data: specialityData,
+                    methods: {
+                        onClick: function() {
+                            var vm = this
+                            let form = new FormData();
+                            form.append("college_name",this.collegeName);
+                            instance.post("/speciality/college_name",form)
+                                .then(function (response) {
+                                    vm.code = response.data.code
+                                    vm.specialitys = response.data.data
+                                })
+                                .catch(function (error) {
+                                    vm.message = 'Error! Could not reach the API. ' + error
+                                })
+                        }
+                    }
+                }) 
+
+
+
         </script>
     </body>
 </html>
