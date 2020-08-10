@@ -1,0 +1,173 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Maisuir</title>
+        <script src="vue.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+        <style>
+            #header {
+                background-color:#474c50;
+                color:white;
+                text-align:center;
+                padding:5px;
+                margin-bottom: 5px;
+            }
+            .avtiveAction {
+                padding: 5px;
+                background-color:#474c50;
+            }
+            .action {
+                padding: 5px;
+            }
+            .subAvtiveActionBg {
+                padding: 15px;
+                background-color:#1bd19a;
+            }
+            .subActionBg {
+                padding: 15px;
+            }
+            .menu_image {
+                display: inline-block;
+                vertical-align: middle;
+                margin-left: 10px;
+                height:20px;
+                width:20px;
+            }
+            .menu_text {
+                color:white;
+                size: 20px;
+                vertical-align: middle;
+                margin-left: 5px;
+                display: inline-block;
+            }
+            .wrap{
+                margin:0 auto;
+                width:80%;
+            }
+            #menu{
+                width:200px;
+                float: left;
+                position:absolute;
+                top:0;
+                bottom:0;
+                left:0;
+                right:0;
+            }
+            #content{
+                margin-left:200px;
+                position:absolute;
+                top:0;
+                bottom:0;
+                left:0;
+                right:0;
+            }
+        </style>
+    </head>
+    <body class="wrap">
+        <div id="menu" style="background-color:#2e3438; width: 200px;">
+            <div id="header">
+                <H3 style="color: #f8f8f8;">查询系统</H3>
+            </div>
+            <div id="actions">
+                <div class="action" v-for="(action, index) in actions"  v-on:mouseover="changeActive($event)" v-on:mouseout="removeActive($event)">
+                    <div v-bind:class="action.background" v-on:click="onClick(index)">
+                        <img class="menu_image" v-bind:src="action.url">
+                        <li class="menu_text">{{action.title}}</li>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="content">
+            <div id="specialitys" v-if="show">
+                <input v-model="collegeName">
+                <button v-on:click="onClick">查询</button>
+                {{ message }}
+                <table border="1">
+                    <tr>
+                    <th>大学</th>
+                    <th>专业</th>
+                    </tr>
+                    <tr v-for="speciality in specialitys">
+                    <td>{{speciality.college_name}}</td>
+                    <td>{{speciality.speciality_name}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <script type="text/javascript" charset="utf-8">
+            var menuData = {
+                actions:[
+                    {
+                        url:"http://192.168.18.6:8080/image/menu/speciality.png",
+                        title:"专业",
+                        background:"subAvtiveActionBg",
+                        src:"top.html"
+                    },
+                    {
+                        url:"http://192.168.18.6:8080/image/menu/speciality.png",
+                        title:"专业2",
+                        background:"subActionBg",
+                        src:"test.html"
+                    }
+                ],
+                currentIndex:0
+            }
+            var vm = new Vue({
+                el:"#actions",
+                data:menuData,
+                methods:{
+                    changeActive($event){
+                        $event.currentTarget.className="avtiveAction";
+                    },
+                    removeActive($event){
+                        $event.currentTarget.className="action";
+                    },
+                    onClick(index){
+                        this.actions[this.currentIndex].background = "subActionBg"
+                        this.actions[index].background = "subAvtiveActionBg"
+                        this.currentIndex = index
+                        
+                        specialityData.show = index === 0
+                        
+                    }
+                }
+            })
+
+            const instance = axios.create({
+                baseURL: 'http://192.168.18.6:8080/top',
+                timeout: 10000,
+                headers: {'Content-Type': 'multipart/form-data'}
+            });
+            var specialityData = {
+                code:"",
+                message:"",
+                specialitys: [],
+                collegeName:"",
+                show:vm.currentIndex === 0
+            }
+            var specialitys = new Vue({
+                el: "#specialitys",
+                data: specialityData,
+                methods: {
+                    onClick: function() {
+                        var vm = this
+                        let form = new FormData();
+                        form.append("college_name",this.collegeName);
+                        instance.post("/speciality/college_name",form)
+                            .then(function (response) {
+                                vm.code = response.data.code
+                                vm.specialitys = response.data.data
+                            })
+                            .catch(function (error) {
+                                vm.message = 'Error! Could not reach the API. ' + error
+                            })
+                    }
+                }
+            }) 
+        </script>
+        <script type="text/javascript" charset="utf-8">
+            
+    </script>
+    </body>
+
+</html>

@@ -12,6 +12,7 @@ import (
 func main() {
 	router := gin.Default()
 	router.StaticFS("/page", http.Dir("./pages"))
+	router.StaticFS("/image", http.Dir("./resources"))
 	router.StaticFile("/favicon.ico", "./resources/favicon.ico")
 	err := database.Init() //データベースを初期化
 	if err != nil {
