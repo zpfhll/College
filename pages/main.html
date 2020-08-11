@@ -64,6 +64,7 @@
         </style>
     </head>
     <body class="wrap">
+        
         <div id="menu" style="background-color:#2e3438; width: 200px;">
             <div id="header">
                 <H3 style="color: #f8f8f8;">查询系统</H3>
@@ -93,18 +94,31 @@
                     </tr>
                 </table>
             </div>
+            <!-- 人员信息 -->
+            <div id="members" v-if="show">
+                <table border="1">
+                    <tr>
+                    <th>龙九子</th>
+                    </tr>
+                    <tr v-for="member in members">
+                    <td>{{member}}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
+
+        <!-- 菜单栏 -->
         <script type="text/javascript" charset="utf-8">
             var menuData = {
                 actions:[
                     {
-                        url:"http://192.168.18.6:8080/image/menu/speciality.png",
+                        url:"http://172.23.11.92:8080/image/menu/speciality.png",
                         title:"专业",
                         background:"subAvtiveActionBg",
                         src:"top.html"
                     },
                     {
-                        url:"http://192.168.18.6:8080/image/menu/speciality.png",
+                        url:"http://172.23.11.92:8080/image/menu/speciality.png",
                         title:"专业2",
                         background:"subActionBg",
                         src:"test.html"
@@ -128,13 +142,17 @@
                         this.currentIndex = index
                         
                         specialityData.show = index === 0
+                        memberData.show = index === 1
                         
                     }
                 }
             })
+        </script>
 
+        <!-- 专业信息 -->
+        <script type="text/javascript" charset="utf-8">
             const instance = axios.create({
-                baseURL: 'http://192.168.18.6:8080/top',
+                baseURL: 'http://172.23.11.92:8080/top',
                 timeout: 10000,
                 headers: {'Content-Type': 'multipart/form-data'}
             });
@@ -165,9 +183,19 @@
                 }
             }) 
         </script>
+
+        <!-- 人员信息 -->
         <script type="text/javascript" charset="utf-8">
-            
-    </script>
+            var memberData = {
+                members: ["囚牛","睚眦","嘲风","蒲牢","狻猊","霸下","狴犴","负屃","螭吻"],
+                show:vm.currentIndex === 1
+            }
+            var members = new Vue({
+                el: "#members",
+                data: memberData
+            }) 
+        </script>
+
     </body>
 
 </html>

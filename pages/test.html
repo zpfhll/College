@@ -121,7 +121,7 @@
                         onClick: function() {
                             this.fullName = '赵 麦穗'
                             var vm = this
-                            axios.get('http://192.168.18.6:8080/test?name=' + this.sendMessage)
+                            axios.get('http://172.23.11.92:8080/test?name=' + this.sendMessage)
                                 .then(function (response) {
                                     vm.message = response.data
                                 })
@@ -143,7 +143,7 @@
                 
                 //-----------------------------------------
                 const instance = axios.create({
-                    baseURL: 'http://192.168.18.6:8080/top',
+                    baseURL: 'http://172.23.11.92:8080/top',
                     timeout: 10000,
                     headers: {'Content-Type': 'multipart/form-data'}
                 });
